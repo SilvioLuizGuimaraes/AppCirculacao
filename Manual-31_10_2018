@@ -1,0 +1,41 @@
+1 - ip de acesso externo para acesso ao websivice
+Exemplo: "http://192.168.1.2:8080/AppCirculacao/rest/circulacao/login/{0}/{1}"
+2 - Criar login de senha para o entregador
+
+
+
+1° Cadastrar pessoa
+2° Cadastrar login e senha
+3° definir um grupo de acesso para o usuário cadastrado.
+4° cadastrar um entregador(Menu / Distribuição / Entregador - Inclusão)
+4° definir um Itineriario para o entregador(Menu/ Distribuição/ Itinerários - Inclusão)
+
+codigoDaPessoa = 164424
+usuario = entregadorh
+senha = 123456
+dataDoJornal = 11/06/2015
+setor = 031-Setor 031                                     
+
+select * from dbo.disSetorDeEntrega where codigoDoSetorDeEntrega = 31
+
+select * from dbo.disItinerarios
+
+select * from assDistribuicao 
+where codigoDoSetorDeEntrega = 31
+and dataDoJornal > '2018-02-06 00:00:00.000' and dataDoJornal < '2018-12-06 00:00:00.000'
+order by dataDoJornal asc
+
+Rio Preto
+
+<Resource name="jdbc/wsgestor-ds"
+              auth="Container"
+              scope="Shareable"
+              type="javax.sql.DataSource"
+              username="sa"
+              password="s@DR_o11"
+              driverClassName="net.sourceforge.jtds.jdbc.Driver"
+              url="jdbc:jtds:sqlserver://10.64.0.11:1433/gestorTeste;user=sa;password=s@DR_o11"
+              maxActive="100"
+              maxIdle="30"
+              maxWait="10000"
+			  validationQuery="select 1 "  />

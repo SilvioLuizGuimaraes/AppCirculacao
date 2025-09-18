@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!-- The contents of this file will be loaded for each web application -->
+<Context>
+
+    <!-- Default set of monitored resources. If one of these changes, the    -->
+    <!-- web application will be reloaded.                                   -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>WEB-INF/tomcat-web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname="" />
+    -->
+	
+	
+	<Environment name="tempoSegundosGravarArquivoTimeout" value="120"  type="java.lang.Integer" override="true"/>
+    <Environment name="tempoSegundosChamarWSTimeout" value="120"  type="java.lang.Integer" override="true"/>
+	
+	<Environment name="parametroQuantidadeDeSegundosDelay" value="0"  type="java.lang.Integer" override="true"/>
+
+	<Environment name="caminhoLogErroWebService" value="C:/temp"  type="java.lang.String" override="true"/>
+	
+	<Environment name="caminhoMsgSenhaAlterada" value="C:\Tomcat\webapps\axis2\WEB-INF\services\modelo_mensagem_alteracao_senha.htm"  type="java.lang.String" override="true"/>
+	
+	<Environment name="caminhoMsgChaveLiberacao" value="C:\Tomcat\webapps\axis2\WEB-INF\services\modelo_mensagem_chave_liberacao.htm"  type="java.lang.String" override="true"/>
+	
+	<Environment name="codigoControleEmailSenhaAlterada" value="8"  type="java.lang.Integer" override="true"/>
+	
+	<Environment name="codigoControleEmailChaveLiberacao" value="9"  type="java.lang.Integer" override="true"/>
+
+    <Environment name="repositorioArquivoCadastro" value="true,\\gztvix-app03hm.redegazeta.net\totvs-teste\erp\especificos\arquivos\integracao\cliente_fornecedor\aprocessar"  type="java.lang.String" override="true"/>
+
+    <Environment name="urlArquivoCadastro" value="http://gztvix-app03.redegazeta.net/scripts/cgiip.exe/WService=wsbroker_teste/gzp/gzcd0704-ws.w?arquivoxml="  type="java.lang.String" override="true"/>
+
+	
+	<Environment name="codigoDoEvento" value="115"  type="java.lang.Integer" override="true"/>
+	
+	<Environment name="qualificacaoPontosCinema" value="0"  type="java.lang.Integer" override="true"/>
+	
+	<Environment name="qualificacaoPontosAnuncio" value="0"  type="java.lang.Integer" override="true"/>
+	
+	<Environment name="qualificacaoPontosRenovacao" value="0"  type="java.lang.Integer" override="true"/>
+	
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname="" />
+    -->
+	
+			  <Resource name="jdbc/wsgestor-ds"
+              auth="Container"
+              scope="Shareable"
+              type="javax.sql.DataSource"
+              username="gestor"
+              password="G3s10R_LL"
+              driverClassName="net.sourceforge.jtds.jdbc.Driver"
+ 			  url="jdbc:jtds:sqlserver://10.64.0.11:1433/gestor"              
+ 			  maxActive="100"
+              maxIdle="30"
+              maxWait="10000"
+			  logAbandoned="true" 
+			  initialSize="30"
+			  removeAbandoned="true" 
+			  removeAbandonedTimeout="60" 
+			  closeMethod="close"
+			  validationQuery="select 1"
+			  />
+	
+</Context>
