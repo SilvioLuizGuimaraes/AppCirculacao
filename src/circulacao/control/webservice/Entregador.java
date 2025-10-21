@@ -2,9 +2,7 @@
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -24,6 +22,7 @@ import circulacao.model.webservice.CadMovimentoCirculacao;
 import circulacao.model.webservice.CadReclamacaoCirculacao;
 import circulacao.model.webservice.Circulacao;
 import circulacao.model.webservice.ConjuntoEdificiosSetor;
+import circulacao.model.webservice.DisEntregaEdificios;
 import circulacao.model.webservice.DisSetorDeEntregaProdutoServicoHorarios;
 import circulacao.model.webservice.ExceptionEntregador;
 import circulacao.model.webservice.IDistribuicao;
@@ -87,6 +86,43 @@ private String aplicacao = "gestoron";
       {
             String dados = "teste";
          return null;   
+      }
+      @GET
+      @Produces("application/json; charset=UTF-8")
+      @Path("/consultarHorario/{dataDoJornal}/{codigoDoSetorDeEntrega}/{codigoDoProdutoServico}")
+      public DisSetorDeEntregaProdutoServicoHorarios getConsultarHorario(@PathParam("dataDoJornal") String dataDoJornal, @PathParam("codigoDoSetorDeEntrega") Integer codigoDoSetorDeEntrega,
+      @PathParam("codigoDoProdutoServico") Integer codigoDoProdutoServico)
+      {
+    	  
+           EntregadorDAO  dao = new EntregadorDAO();
+           DisSetorDeEntregaProdutoServicoHorarios horario = null;
+           
+            
+            try
+            {
+            	horario = dao.getVerificarHoraInicioDaDistribuicao(dataDoJornal, codigoDoSetorDeEntrega, codigoDoProdutoServico);
+            }
+            catch (Exception e)
+            {
+                  geraLog(e.getMessage(), e);
+
+                  DisSetorDeEntregaProdutoServicoHorarios horarioErro = new DisSetorDeEntregaProdutoServicoHorarios();
+                  List<ExceptionEntregador> listaErro = new ArrayList<ExceptionEntregador>();
+                  ExceptionEntregador  exception = new ExceptionEntregador();
+                  exception.setMensagem(e.getMessage());
+                  exception.setMetodo("getDisSetorDeEntregaProdutoServicoHorarios");
+                  exception.setCodigo(e.hashCode());
+                  exception.setStatus(true);
+                  listaErro.add(exception);
+                  
+                  horarioErro.setListaErro(listaErro);
+                  
+                  return horario;
+            }
+            
+            return horario; 
+      
+      
       }
       
 		@POST
@@ -537,21 +573,53 @@ private String aplicacao = "gestoron";
             return lista;
       }
       
-      private String getAplicacao() 
-      {
-            return aplicacao;
-      }
+	@GET
+	@Produces("application/json; charset=UTF-8")
+	@Path("/listaDisEntregaEdificios/{dataDoJornal}/{codigoDaPessoaDistribuidor}/{codigoDoProdutoServico}")
+	public List<DisEntregaEdificios> getListaDisEntregaEdificios(@PathParam("dataDoJornal") String dataDoJornal, 
+			@PathParam("codigoDaPessoaDistribuidor") int codigoDaPessoaDistribuidor, 
+            @PathParam("codigoDoProdutoServico") int codigoDoProdutoServico) 
+	{
+		
+		List<DisEntregaEdificios> lista = new ArrayList<DisEntregaEdificios>();
+		EntregadorDAO dao = new EntregadorDAO();
+
+		try {
+
+			lista = dao.getDisEntregaEdificios(dataDoJornal, codigoDaPessoaDistribuidor, codigoDoProdutoServico);
+
+		} catch (Exception e) {
+
+			geraLog(e.getMessage(), e);
+			DisEntregaEdificios erro = new DisEntregaEdificios();
+			List<ExceptionEntregador> listaErro = new ArrayList<ExceptionEntregador>();
+			ExceptionEntregador exception = new ExceptionEntregador();
+			exception.setMensagem(e.getMessage());
+			exception.setMetodo("getListaDisEntregaEdificios");
+			exception.setCodigo(e.hashCode());
+			exception.setStatus(true);
+			listaErro.add(exception);
+
+			lista.add(erro);
+
+		}
+
+		return lista;
+	}
       
-      private void geraLog(String msgErro, Exception e)
-      {
-            try
-            {
-                  log.geraLogErro(msgErro, e, getAplicacao());
-            }
-            catch (Exception eErro)
-            {
-                  System.out.println("Erro gera��o do log - "+ eErro.getStackTrace());
-            }
-      }
+	private String getAplicacao() {
+		return aplicacao;
+	}
+
+	private void geraLog(String msgErro, Exception e) {
+		try {
+			
+			log.geraLogErro(msgErro, e, getAplicacao());
+			
+		} catch (Exception eErro) {
+			
+			System.out.println("Erro geracao do log - " + eErro.getStackTrace());
+		}
+	}
       
 }

@@ -1,6 +1,8 @@
 package circulacao.model.webservice;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class DisSetorDeEntregaProdutoServicoHorarios implements Serializable
@@ -13,7 +15,7 @@ public class DisSetorDeEntregaProdutoServicoHorarios implements Serializable
       private String codigoDoUsuario;
       private String dataDeCadastramento;  
       private Boolean desabilitarInsersao;
-      
+      private List<ExceptionEntregador> listaErro;
   
       public static DisSetorDeEntregaProdutoServicoHorarios disSetorDeEntregaProdutoServicoHorarios
       ( String dataDoJornal,
@@ -25,6 +27,8 @@ public class DisSetorDeEntregaProdutoServicoHorarios implements Serializable
         String dataDeCadastramento, Boolean desabilitarInsersao)
       {
             DisSetorDeEntregaProdutoServicoHorarios model = new DisSetorDeEntregaProdutoServicoHorarios();
+            List<ExceptionEntregador> listaErro = new ArrayList<ExceptionEntregador>();
+            ExceptionEntregador exception = new ExceptionEntregador();
             
             if(dataDoJornal ==null)dataDoJornal = "";
             model.setDataDoJornal(dataDoJornal);
@@ -50,6 +54,13 @@ public class DisSetorDeEntregaProdutoServicoHorarios implements Serializable
             
             
             model.setDesabilitarInsersao(desabilitarInsersao);
+            
+            exception.setMensagem("");
+            exception.setMetodo("");
+            exception.setCodigo(0);
+            exception.setStatus(false);
+            listaErro.add(exception);
+            model.setListaErro(listaErro);
             
             return model;
             
@@ -118,6 +129,16 @@ public class DisSetorDeEntregaProdutoServicoHorarios implements Serializable
       public void setDesabilitarInsersao(Boolean desabilitarInsersao)
       {
             this.desabilitarInsersao = desabilitarInsersao;
+      }
+      
+      public List<ExceptionEntregador> getListaErro()
+      {
+            return listaErro;
+      }
+
+      public void setListaErro(List<ExceptionEntregador> listaErro)
+      {
+            this.listaErro = listaErro;
       }
       
 }

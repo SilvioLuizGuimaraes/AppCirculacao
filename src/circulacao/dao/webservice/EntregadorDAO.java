@@ -21,6 +21,7 @@ import circulacao.model.webservice.CadMovimentoCirculacao;
 import circulacao.model.webservice.CadReclamacaoCirculacao;
 import circulacao.model.webservice.Circulacao;
 import circulacao.model.webservice.ConjuntoEdificiosSetor;
+import circulacao.model.webservice.DisEntregaEdificios;
 import circulacao.model.webservice.DisSetorDeEntregaProdutoServicoHorarios;
 import circulacao.model.webservice.Distribuicao;
 import circulacao.model.webservice.EntregadorModel;
@@ -1457,6 +1458,82 @@ public class EntregadorDAO
 					d.setCodigoMotivoDeNaoEntrega(rs.getInt("codigoMotivoDeNaoEntrega"));
 					d.setDataHoraEntrega(rs.getString("dataHoraEntrega"));
 					d.setDescricaoMotivoDeNaoEntrega(rs.getString("descricaoMotivoDeNaoEntrega"));
+					lista.add(d);
+				}
+
+				rs.close();
+				Conexao.closeConnection();
+
+				return lista;
+				
+			} catch (Exception e) {
+				geraLog("", e);
+				return null;
+			}
+		}
+		
+public List<DisEntregaEdificios> getDisEntregaEdificios(String dataDoJornal, Integer codigoDaPessoaDistribuidor, Integer codigoDoProdutoServico) {
+			
+			try {
+				
+				DisEntregaEdificios d = new DisEntregaEdificios();
+				List<DisEntregaEdificios> lista = new ArrayList<DisEntregaEdificios>();
+				ResultSet rs;
+				Conexao.openConnection();
+
+				String sql = "SELECT endLogradouros.cep, "
+							+ "  endBairros.nomeDoBairro, "
+							+ "	 endMunicipios.nomeDoMunicipio, "
+							+ "	 endLogradouros.nomeDoLogradouro, "
+							+ "	 assLocalDeEntrega.numeroDoEndereco, "
+							+ "	 cadEdificio.descricaoDoEdificio, "
+							+ "	 COUNT(assLocalDeEntrega.codigoDoEnderecamento) AS assinantes, "
+							+ "	 assLocalDeEntrega.codigoDoSetorDeEntrega, "
+							+ "	 disSetorDeEntrega.nomeDoSetorDeEntrega, "
+							+ "	 SUM(assDistribuicao.qtdJornaisContrato) AS qtdJornaisContrato "
+							+ "  FROM assDistribuicao AS assDistribuicao "
+							+ "  INNER JOIN disSetorDeEntrega ON assDistribuicao.codigoDoSetorDeEntrega = disSetorDeEntrega.codigoDoSetorDeEntrega "
+							+ "	 INNER JOIN cadEdificioLogradouros "
+							+ "	 INNER JOIN cadEdificio ON cadEdificioLogradouros.codigoDoEndereco = cadEdificio.codigoDoEndereco "
+							+ "	 INNER JOIN assLocalDeEntrega ON cadEdificioLogradouros.codigoDoLogradouro = assLocalDeEntrega.codigoDoLogradouro "
+							+ "	 INNER JOIN endLogradouros ON cadEdificioLogradouros.codigoDoLogradouro = endLogradouros.codigoDoLogradouro "
+							+ "	 INNER JOIN endBairros ON endLogradouros.codigoDoBairro = endBairros.codigoDoBairro "
+							+ "	 INNER JOIN endMunicipios ON endBairros.codigoDoMunicipio = endMunicipios.codigoDoMunicipio "
+							+ "	 AND endBairros.codigoDoMunicipio = endMunicipios.codigoDoMunicipio ON assDistribuicao.codigoDoEnderecamento = assLocalDeEntrega.codigoDoEnderecamento "
+							+ "	 INNER JOIN disItinerarios AS disItinerarios ON disSetorDeEntrega.codigoDoSetorDeEntrega = disItinerarios.codigoDoSetorDeEntrega "
+							+ "  WHERE assLocalDeEntrega.idPredio = 1 "
+							+ "  AND assDistribuicao.situacaoDoContrato = 1 "
+							+ "  AND assDistribuicao.dataDoJornal = CONVERT(DATETIME, '"+dataDoJornal+" 00:00:00', 102)"
+							+ "	 AND disItinerarios.codigoDaPessoaResponsavel = "+codigoDaPessoaDistribuidor+" "
+							+ "	 AND assDistribuicao.codigoDoProdutoServico = "+codigoDoProdutoServico +" "
+							+ "  GROUP BY assLocalDeEntrega.numeroDoEndereco, "
+							+ "  cadEdificio.descricaoDoEdificio, "
+							+ "	 endLogradouros.cep, "
+							+ "	 endLogradouros.nomeDoLogradouro, "
+							+ "	 endBairros.nomeDoBairro, "
+							+ "	 endMunicipios.nomeDoMunicipio, "
+							+ "	 assLocalDeEntrega.codigoDoSetorDeEntrega, "
+							+ "	 disSetorDeEntrega.nomeDoSetorDeEntrega, "
+							+ "	 assDistribuicao.qtdJornaisContrato "
+							+ "";
+
+				rs = Conexao.executeQuery(sql);
+
+				while(rs.next()) 
+				{
+					
+					d = new DisEntregaEdificios();
+		
+					d.setCep(rs.getString("cep").trim());
+					d.setNomeDoBairro(rs.getString("nomeDoBairro").trim());
+					d.setNomeDoMunicipio(rs.getString("nomeDoMunicipio").trim());
+					d.setNomeDoLogradouro(rs.getString("nomeDoLogradouro").trim());
+					d.setNumeroDoEndereco(rs.getString("numeroDoEndereco").trim());
+					d.setDescricaoDoEdificio(rs.getString("descricaoDoEdificio").trim());
+					d.setAssinantes(rs.getInt("assinantes"));
+					d.setNomeDoSetorDeEntrega(rs.getString("nomeDoSetorDeEntrega").trim());
+					d.setQtdJornaisContrato(rs.getInt("qtdJornaisContrato"));
+					
 					lista.add(d);
 				}
 
